@@ -42,7 +42,7 @@ $ ./ctl-up searxng
 
 The core of the architecture is a modular docker-compose and reverse-proxy configuration file structure.
 It consists of a shared root configuration, a reverse-proxy configuration, and service configurations.
-The service stack configuration is then synthesized using `ctl` scripts, which generate a global `Caddyfile` and operate on the service stack.
+The service stack configuration is then synthesized using `ctl` scripts, which generate a global reverse-proxy config and operate on the service stack.
 
 Shared configuration goes into the root directory, under [root.env](./root.env):
 ```bash
@@ -52,7 +52,7 @@ export TZ=Europe/Berlin
 # ...
 ```
 
-Reverse proxy (using [Caddy](https://caddyserver.com/)]) configuration is defined in a directory ([caddy](./caddy/)), with the following structure:
+Reverse proxy (using [Caddy](https://caddyserver.com/)) configuration is defined in a directory ([caddy](./caddy/)), with the following structure:
 ```
 .
 ├── caddy.env
