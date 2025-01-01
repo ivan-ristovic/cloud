@@ -1,0 +1,6 @@
+https://{$STREAM_SUBDOMAIN1}.{$DOMAIN}:443, 
+https://{$STREAM_SUBDOMAIN2}.{$DOMAIN}:443, 
+https://{$STREAM_SUBDOMAIN3}.{$DOMAIN}:443 { 
+    header Content-Security-Policy "frame-ancestors {$NC_SUBDOMAIN}.{$DOMAIN}"
+    reverse_proxy localhost:{$STREAM_PORT}
+}

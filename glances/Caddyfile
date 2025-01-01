@@ -1,0 +1,6 @@
+https://{$GLANCES_WEBUI_SUBDOMAIN}.{$DOMAIN}:443 {
+    reverse_proxy localhost:{$GLANCES_WEBUI_PORT}
+    basicauth {
+        {$GLANCES_WEBUI_USERNAME} {$GLANCES_WEBUI_PASSWORD}
+    }
+}

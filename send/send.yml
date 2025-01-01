@@ -1,0 +1,41 @@
+services:
+  caddy:
+    env_file:
+      - ./send/proxy.env
+
+  send:
+    image: registry.gitlab.com/timvisee/send:latest
+    container_name: send
+    restart: unless-stopped
+    ports:
+      - $SEND_PORT:$SEND_PORT
+    volumes:
+      - $SEND_STORAGE:/uploads
+    environment:
+      - VIRTUAL_HOST=$SEND_DOMAIN
+      - VIRTUAL_PORT=$SEND_PORT
+      - DHPARAM_GENERATION=false
+      - NODE_ENV=production
+      - BASE_URL=$SEND_BASE_URL
+      - PORT=$SEND_PORT
+      - REDIS_HOST=send-redis
+      - FILE_DIR=/uploads
+      - EXPIRE_TIMES_SECONDS=300,600,1800,3600,7200,21600,43200,86400
+      - DEFAULT_EXPIRE_SECONDS=600
+      - MAX_EXPIRE_SECONDS=86400
+      - DOWNLOAD_COUNTS=1,2,5,10,15,25,50
+      - MAX_DOWNLOADS=50
+      - MAX_FILE_SIZE=536870912
+    depends_on:
+      - caddy
+      - send-redis
+  
+  send-redis:
+    image: 'redis:alpine'
+    container_name: send-redis
+    restart: always
+    volumes:
+      - send-redis:/data
+
+volumes:
+  send-redis:

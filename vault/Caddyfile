@@ -1,0 +1,6 @@
+https://{$VAULTWARDEN_SUBDOMAIN}.{$DOMAIN}:443 {
+    reverse_proxy localhost:{$VAULTWARDEN_PORT} {
+        header_up X-Real-IP {remote_host}
+    }
+}
+

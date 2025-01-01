@@ -1,0 +1,54 @@
+services:
+  gluetun:
+    ports:
+      - 127.0.0.1:$SEARXNG_PORT:$SEARXNG_PORT
+      - 127.0.0.1:$SEARXNG_REDIS_PORT:$SEARXNG_REDIS_PORT
+
+  searxng:
+    container_name: searxng
+    image: docker.io/searxng/searxng:latest
+    network_mode: "service:gluetun"
+    volumes:
+      - ./searxng/data:/etc/searxng:rw
+    environment:
+      - SEARXNG_BASE_URL=https://${SEARXNG_SUBDOMAIN}.${DOMAIN}/
+      - BIND_ADDRESS=0.0.0.0:$SEARXNG_PORT
+      - SEARXNG_REDIS_URL=$SEARXNG_REDIS_URL
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+    depends_on:
+      caddy:
+        condition: service_started
+      gluetun:
+        condition: service_started
+      searxng-redis:
+        condition: service_started
+        
+  searxng-redis:
+    container_name: searxng-redis
+    image: docker.io/library/redis:alpine
+    command: redis-server --port $SEARXNG_REDIS_PORT --save 30 1 --loglevel warning
+    network_mode: "service:gluetun"
+    cap_drop:
+      - ALL
+    cap_add:
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+    depends_on:
+      - caddy
+      - gluetun
+
+  caddy:
+    env_file:
+      - ./searxng/proxy.env
+

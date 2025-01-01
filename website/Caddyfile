@@ -1,0 +1,4 @@
+https://{$DOMAIN}:443 {
+    redir https://web.{$DOMAIN}
+}
+

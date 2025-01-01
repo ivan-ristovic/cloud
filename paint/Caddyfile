@@ -1,0 +1,4 @@
+https://{$PAINT_SUBDOMAIN}.{$DOMAIN}:443 {
+    reverse_proxy localhost:{$PAINT_PORT}
+}
+

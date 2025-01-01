@@ -1,0 +1,30 @@
+services:
+  gluetun:
+    ports:
+      - $TORRENT_WEBUI_PORT:$TORRENT_WEBUI_PORT
+      - 6881:6881
+      - 6881:6881/udp
+
+  caddy:
+    env_file:
+      - ./qbittorrent/proxy.env
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    restart: unless-stopped
+    network_mode: "service:gluetun"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=$TZ
+      - WEBUI_PORT=$TORRENT_WEBUI_PORT
+    volumes:
+      - ./qbittorrent/data:/config
+      - $TORRENT_DIR:/downloads
+    depends_on:
+      caddy:
+        condition: service_started
+      gluetun:
+        condition: service_healthy
+

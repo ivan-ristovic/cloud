@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ $# -lt 1 ]; then
+    echo 'missing email'
+    exit 1
+fi
+
+set -xe;
+
+# pass --admin to the `create-user` script to make this user an admin user
+docker exec overleaf /bin/bash -ce "cd /overleaf/services/web && node modules/server-ce-scripts/scripts/create-user --admin --email=$1"
+

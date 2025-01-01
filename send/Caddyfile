@@ -1,0 +1,4 @@
+https://{$SEND_SUBDOMAIN}.{$DOMAIN}:443 {
+    reverse_proxy localhost:{$SEND_PORT}
+}
+

@@ -1,0 +1,16 @@
+services:
+  privatebin:
+    image: privatebin/nginx-fpm-alpine:1.2.1
+    restart: unless-stopped
+    container_name: privatebin
+    read_only: true
+    ports:
+      - $PRIVATEBIN_PORT:80
+    volumes:
+      - './privatebin/data:/srv/data'
+      - './privatebin/conf.php:/srv/cfg/conf.php:ro'
+
+  caddy:
+    env_file:
+      - ./privatebin/proxy.env
+

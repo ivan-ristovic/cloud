@@ -1,0 +1,11 @@
+{$DOMAIN} {
+	header /.well-known/matrix/* Content-Type application/json
+	header /.well-known/matrix/* Access-Control-Allow-Origin *
+	respond /.well-known/matrix/server `{"m.server": "{$MATRIX_SUBDOMAIN}.{$DOMAIN}:443"}`
+	respond /.well-known/matrix/client `{"m.homeserver": {"base_url": "https://{$MATRIX_SUBDOMAIN}.{$DOMAIN}"}}`
+}
+
+{$MATRIX_SUBDOMAIN}.{$DOMAIN} { 
+	reverse_proxy /_matrix/* localhost:{$MATRIX_PORT}
+}
+

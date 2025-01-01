@@ -1,0 +1,26 @@
+# Huginn using gluetun as the VPN container
+services:
+  huginn:
+    image: ghcr.io/huginn/huginn
+    restart: unless-stopped
+    container_name: huginn
+    network_mode: "service:gluetun"
+    volumes:
+      - ./huginn/data:/var/lib/mysql
+    env_file:
+      - ./huginn/huginn_conf.env
+    depends_on:
+      caddy:
+        condition: service_started
+      gluetun:
+        condition: service_healthy
+      mail:
+        condition: service_started
+
+  caddy:
+    env_file:
+      - ./huginn/proxy.env
+
+  gluetun:
+    ports:
+      - $HUGINN_PORT:3000

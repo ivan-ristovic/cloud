@@ -1,0 +1,16 @@
+services:
+  caddy:
+    image: caddy:alpine
+    restart: unless-stopped
+    container_name: caddy
+    env_file:
+      - root.env
+      - ./caddy/caddy.env
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy/certs:/certs
+      - ./caddy/config:/config
+      - ./caddy/data:/data
+      - ./caddy/sites:/srv
+    network_mode: "host"
+

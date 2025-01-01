@@ -1,0 +1,70 @@
+services:
+  caddy:
+    env_file:
+      - ./overleaf/proxy.env
+
+  overleaf:
+    # Custom image with comments and change tracking:
+    # https://github.com/yu-i-i/overleaf-cep/tree/track-changes?tab=readme-ov-file
+    image: ivanristovic/sharelatex:full-enh
+    # Alternative, just texlive-full:
+    # image: tuetenk0pp/sharelatex-full:latest
+    container_name: overleaf
+    restart: always
+    ports:
+      - $OVERLEAF_PORT:80
+    environment:
+      - OVERLEAF_SECURE_COOKIE=true
+      - OVERLEAF_BEHIND_PROXY=true
+      - OVERLEAF_APP_NAME=$OVERLEAF_SITE
+      - OVERLEAF_MONGO_URL=mongodb://overleaf-mongo/sharelatex
+      - OVERLEAF_REDIS_HOST=overleaf-redis
+      - REDIS_HOST=overleaf-redis
+      - ENABLED_LINKED_FILE_TYPES='project_file,project_output_file'
+      - ENABLE_CONVERSIONS=true
+      - EMAIL_CONFIRMATION_DISABLED=true
+      - TEXMFVAR=/var/lib/overleaf/tmp/texmf-var
+      - OVERLEAF_SITE_URL=https://${OVERLEAF_SUBDOMAIN}.${DOMAIN}
+      - OVERLEAF_NAV_TITLE=$OVERLEAF_SITE
+      - OVERLEAF_ADMIN_EMAIL=$OVERLEAF_ADMIN_EMAIL
+    volumes:
+      - ./overleaf/data:/var/lib/overleaf
+    depends_on:
+      caddy:
+        condition: service_started
+      overleaf-mongo:
+        condition: service_healthy
+      overleaf-redis:
+        condition: service_started
+    links:
+      - overleaf-mongo
+      - overleaf-redis
+    stop_grace_period: 60s
+
+  overleaf-mongo:
+    image: bitnami/mongodb:5.0
+    container_name: overleaf-db
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./overleaf/db:/data/db
+    healthcheck:
+      test: echo 'db.stats().ok' | mongo localhost:27017/test --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    environment:
+      MONGODB_REPLICA_SET_MODE: primary
+      ALLOW_EMPTY_PASSWORD: 'yes'
+
+  overleaf-redis:
+    image: docker.io/library/redis:alpine
+    container_name: overleaf-redis
+    restart: always
+    expose:
+      - 6379
+    volumes:
+      - ./overleaf/cache:/data
+
+

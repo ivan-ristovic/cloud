@@ -1,0 +1,39 @@
+services:
+  matrix-db:
+    container_name: matrix-db
+    image: postgres:15-alpine
+    restart: always
+    volumes:
+      - ./matrix/data/db/:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: $MATRIX_DB_PASS
+      POSTGRES_USER: $MATRIX_DB_USER
+      POSTGRES_DATABASE: $MATRIX_DB
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dendrite"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  matrix:
+    container_name: matrix-server
+    hostname: monolith
+    image: matrixdotorg/dendrite-monolith:latest
+    ports:
+      - $MATRIX_PORT:8008
+      - $MATRIX_PORT2:8448
+    volumes:
+      - ./matrix/data/config:/etc/dendrite
+      - ./matrix/data/media:/var/dendrite/media
+      - ./matrix/data/jetstream:/var/dendrite/jetstream
+      - ./matrix/data/search_index:/var/dendrite/searchindex
+    depends_on:
+      caddy:
+        condition: service_started
+      matrix-db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  caddy:
+    env_file:
+      - ./matrix/proxy.env

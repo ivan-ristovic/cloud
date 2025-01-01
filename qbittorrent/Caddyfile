@@ -1,0 +1,9 @@
+https://{$TORRENT_WEBUI_SUBDOMAIN}.{$DOMAIN}:443 {
+    header Content-Security-Policy "frame-ancestors *.{$DOMAIN}"
+    reverse_proxy localhost:{$TORRENT_WEBUI_PORT}
+    
+    # If you want auth
+    basicauth {
+        {$TORRENT_WEBUI_USERNAME} {$TORRENT_WEBUI_PASSWORD}
+    }
+}

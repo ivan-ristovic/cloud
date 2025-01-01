@@ -1,0 +1,7 @@
+https://{$RSS_BRIDGE_SUBDOMAIN}.{$DOMAIN}:443 {
+    reverse_proxy localhost:{$RSS_BRIDGE_PORT}
+#    basicauth {
+#        {$RSS_BRIDGE_USERNAME} {$RSS_BRIDGE_PASSWORD}
+#    }
+}
+

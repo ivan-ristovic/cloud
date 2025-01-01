@@ -1,0 +1,32 @@
+https://{$NC_SUBDOMAIN}.{$DOMAIN}:443 {
+    header Strict-Transport-Security max-age=31536000;
+
+    redir /.well-known/carddav /remote.php/dav 301
+    redir /.well-known/caldav /remote.php/dav 301
+    redir /.well-known/webfinger /index.php/.well-known/webfinger 301
+    redir /.well-known/nodeinfo /index.php/.well-known/nodeinfo 301
+
+    @forbidden {
+            path /.htaccess
+            path /data/*
+            path /config/*
+            path /db_structure
+            path /.xml
+            path /README
+            path /3rdparty/*
+            path /lib/*
+            path /templates/*
+            path /occ
+            path /console.php
+    }
+
+    reverse_proxy localhost:{$NC_PORT}
+}
+
+https://{$NC_SUBDOMAIN}.{$DOMAIN}:8443 {
+    reverse_proxy https://localhost:{$NC_AIO_PORT} {
+        transport http {
+            tls_insecure_skip_verify
+        }
+    }
+}

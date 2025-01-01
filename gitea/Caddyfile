@@ -1,0 +1,7 @@
+https://{$GIT_SUBDOMAIN}.{$DOMAIN}:443 {
+    reverse_proxy localhost:{$GIT_WEBUI_PORT}
+}
+
+https://{$GIST_SUBDOMAIN}.{$DOMAIN}:443 {
+    reverse_proxy localhost:{$GIST_WEBUI_PORT}
+}

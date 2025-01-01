@@ -1,0 +1,24 @@
+services:
+  rss:
+    image: rssbridge/rss-bridge:latest
+    container_name: rss 
+    restart: unless-stopped
+    network_mode: "service:gluetun"
+    volumes:
+      - ./config:/config
+    env_file:
+      - ./rss/rss.env
+    depends_on:
+      caddy:
+        condition: service_started
+      gluetun:
+        condition: service_healthy
+
+  caddy:
+    env_file:
+      - ./rss/proxy.env
+
+  gluetun:
+    ports:
+      - 127.0.0.1:$RSS_BRIDGE_PORT:80
+

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+./ctl logs -f $@
+

@@ -1,0 +1,37 @@
+services:
+  gitea:
+    image: gitea/gitea
+    container_name: gitea       # note: if you change this, see notes in `setup_git_user.sh`
+    restart: unless-stopped
+    ports:
+      - $GIT_WEBUI_PORT:3000
+      - 127.0.0.1:2222:22
+    environment:
+      - USER_UID=$GITEA_GIT_UID
+      - USER_GID=$GITEA_GIT_GID
+      - DISABLE_REGISTRATION=$GITEA_DISABLE_REGISTRATION 
+    volumes:
+      - ./gitea/data:/data
+      - /home/git/.ssh/:/data/git/.ssh
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - caddy
+
+  opengist:
+    image: ghcr.io/thomiceli/opengist
+    container_name: opengist
+    restart: unless-stopped
+    ports:
+      - "$GIST_WEBUI_PORT:6157"
+      # - "2222:2222"
+    volumes:
+      - "./gitea/data/opengist:/opengist"
+      - "./gitea/config/opengist.yml:/config.yml"
+    depends_on:
+      - caddy
+
+  caddy:
+    env_file:
+      - ./gitea/proxy.env
+

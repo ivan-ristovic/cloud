@@ -1,0 +1,3 @@
+https://{$PRIVATEBIN_SUBDOMAIN}.{$DOMAIN}:443 {
+    reverse_proxy localhost:{$PRIVATEBIN_PORT}
+}
