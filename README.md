@@ -17,7 +17,7 @@ What do I use it for?
 - Personal [Overleaf](https://www.overleaf.com/) server ([`overleaf/`](./overleaf/)) with no limitations and some enterprise features available
 - Personal [matrix](https://matrix.org/) server ([`matrix/`](./matrix/))
 - Personal mailserver used by other services to send emails ([`mail/`](./mail/))
-- Anonymous file sharing via [PrivateBin](https://privatebin.info/)] ([`privatebin/`](./privatebin)) and [Send](https://github.com/timvisee/send)] ([`send/`](./send))
+- Anonymous file sharing via [PrivateBin](https://privatebin.info/) ([`privatebin/`](./privatebin)) and [Send](https://github.com/timvisee/send) ([`send/`](./send))
 - RSS feed bridges ([`rss/`](./rss))
 - *and much more* :)
 
