@@ -1,6 +1,6 @@
 # ExtCloud (Extensible Cloud)
 
-A scalable and easy-to-deploy cloud service architecture template.
+A scalable and easy-to-deploy self-hosting cloud service architecture template.
 I use this template for the current version of the cloud stack that powers my digital life.
 
 Features:
